@@ -10,6 +10,6 @@ class LinInstruction(label: String, val register: Int, val value: Int) : Instruc
     }
 
     override fun toString(): String {
-        return super.toString() + " register " + register + " value is " + value
+        return super.toString() + " register "  + value + " value of " + value
     }
 }

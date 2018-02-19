@@ -102,22 +102,17 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
 
         val ins = scan()
         return when (ins) { // replace with reflection
-            "add" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                AddInstruction(label, r, s1, s2)
-            }
+
             "lin" -> {
                 r = scanInt()
                 s1 = scanInt()
                 LinInstruction(label, r, s1)
             }
-            "mul" -> {
+            "add" -> {
                 r = scanInt()
                 s1 = scanInt()
                 s2 = scanInt()
-                MulInstruction(label, r,s1,s2)
+                AddInstruction(label, r, s1, s2)
             }
             "sub" -> {
                 r = scanInt()
@@ -125,6 +120,20 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                 s2 = scanInt()
                 SubInstruction(label, r, s1, s2)
             }
+
+            "mul" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                MulInstruction(label, r,s1,s2)
+            }
+            "div" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                DivInstruction(label, r, s1, s2)
+            }
+
         // You will have to write code here for the other instructions
             else -> {
                 NoOpInstruction(label, line)
