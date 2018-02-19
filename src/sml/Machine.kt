@@ -134,6 +134,12 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                 DivInstruction(label, r, s1, s2)
             }
 
+            "out" -> {
+                r = scanInt()
+                OutInstruction(label,r)
+
+            }
+
         // You will have to write code here for the other instructions
             else -> {
                 NoOpInstruction(label, line)
