@@ -2,6 +2,7 @@ package sml
 
 import sml.instructions.AddInstruction
 import sml.instructions.LinInstruction
+import sml.instructions.MulInstruction
 import sml.instructions.NoOpInstruction
 import java.io.File
 import java.io.IOException
@@ -67,7 +68,10 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val fileName = PATH + file // source file of SML code
         return try {
             Scanner(File(fileName)).use { sc ->
-                // Scanner attached to the file chosen by the user
+                //use executes the block function on the file resource and
+                //then closes it down whether an exception is thrown or not
+                //when a new file is read in the previous program and labels
+                // will be cleared
                 labels.reset()
                 prog.clear()
 
@@ -111,6 +115,12 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                 r = scanInt()
                 s1 = scanInt()
                 LinInstruction(label, r, s1)
+            }
+            "mul" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                MulInstruction(label, r,s1,s2)
             }
         // You will have to write code here for the other instructions
             else -> {
