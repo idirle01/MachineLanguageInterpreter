@@ -46,7 +46,7 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
      * Precondition: the program and its labels have been store properly.
      */
     fun execute() {
-        while (pc < prog.size) {
+        while (pc < prog.size) { //4
             val ins = prog[pc++]
             ins.execute(this)
         }
@@ -103,6 +103,10 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val ins = scan()
         return when (ins) { // replace with reflection
 
+          "bnz" -> {
+              BnzInstruction (label, scanInt(), scan())
+            }
+
             "lin" -> {
                 r = scanInt()
                 s1 = scanInt()
@@ -125,7 +129,7 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                 r = scanInt()
                 s1 = scanInt()
                 s2 = scanInt()
-                MulInstruction(label, r,s1,s2)
+                MulInstruction(label, r, s1, s2)
             }
             "div" -> {
                 r = scanInt()
@@ -136,9 +140,10 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
 
             "out" -> {
                 r = scanInt()
-                OutInstruction(label,r)
+                OutInstruction(label, r)
 
             }
+
 
         // You will have to write code here for the other instructions
             else -> {
@@ -181,4 +186,21 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
             Integer.MAX_VALUE
         }
     }
+
+    // TODO: take care of the case in which the instruction is not found
+    // TODO: distinguish between returning 0 because the instruction is not found versus simply residing at that address
+    //
+    fun getInstructionAddress(label:String): Int {
+        var address = 0
+        for (instr in prog) {
+            if (label == instr.toString().split(":")[0])
+                return address
+            address++
+        }
+        return 0 //TODO
+    }
+
+
+
+
 }

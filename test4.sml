@@ -8,3 +8,5 @@ f6 sub 3 3 7
 f7 sub 0 0 7
 f8 div 0 0 3
 f9 div 1 1 2
+f10 out 0
+f11 bnz 1 f0

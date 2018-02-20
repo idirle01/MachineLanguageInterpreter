@@ -10,8 +10,11 @@ fun main(args: Array<String>) {
     }
 
     val m = Machine(0, 32) // initialise to first instruction
-    if (!m.readAndTranslate(args[0])) { // convert and add to machine
+
+    if ( !m.readAndTranslate(args[0]) ) { // convert and add to machine
+
         println("Translation phase failed!!")
+
     } else {
         println("Here is the program; it has " + m.prog.size + " instructions.")
         println(m)
