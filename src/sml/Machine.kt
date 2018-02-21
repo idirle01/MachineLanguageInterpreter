@@ -5,6 +5,9 @@ import java.io.File
 import java.io.IOException
 import java.util.Scanner
 import kotlin.collections.ArrayList
+import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.jvm.jvmErasure
 
 /*
  * The machine language interpreter
@@ -65,17 +68,13 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val fileName = PATH + file // source file of SML code
         return try {
             Scanner(File(fileName)).use { sc ->
-                //use executes the block function on the file resource and
-                //then closes it down whether an exception is thrown or not
-                //when a new file is read in the previous program and labels
-                // will be cleared
+
                 labels.reset()
                 prog.clear()
 
-                // Each iteration processes line and reads the next line into line
                 while (sc.hasNext()) {
                     line = sc.nextLine()
-                    // Store the label in label
+                    // Store the label
                     val label = scan()
 
                     if (label.length > 0) {
@@ -96,56 +95,70 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
      * Translate line into an instruction with label label and return the instruction
      */
     fun getInstruction(label: String): Instruction {
-        val s1: Int // Possible operands of the instruction
-        val s2: Int
-        val r: Int
+        /** based on the opcode of the line (add), create instr
+         *map opcodes such as "add" -> "AddInstruction"
+         *get the string, format it to correspond to instructions
+         *get a reference to the class using ::class
+         */
+
 
         val ins = scan()
+
+        val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
+
+        println(className)
+        val classRef: KClass<*> = Class.forName("sml.instructions." + className).kotlin
+
+        val paramTypes = mutableListOf<KClass<*>>()
+
+        for (constructor in classRef.constructors) {
+            for (element in constructor.parameters) {
+                when (element.type.jvmErasure) {
+                    Int::class -> println("Int")
+                    String::class -> println("String")
+                }
+                // paramTypes.add(element.type.jvmErasure)
+                //todo: check constructor.callBy
+            }
+            println()
+        }
+
+        //var parameterTypes = classRef.constructors
         return when (ins) { // replace with reflection
 
-          "bnz" -> {
-              BnzInstruction (label, scanInt(), scan())
+            "bnz" -> {
+                BnzInstruction(label, scanInt(), scan())
             }
 
             "lin" -> {
-                r = scanInt()
-                s1 = scanInt()
-                LinInstruction(label, r, s1)
+
+                LinInstruction(label, scanInt(), scanInt())
+
             }
             "add" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                AddInstruction(label, r, s1, s2)
+
+                AddInstruction(label, scanInt(), scanInt(), scanInt())
             }
             "sub" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                SubInstruction(label, r, s1, s2)
+
+                SubInstruction(label, scanInt(), scanInt(), scanInt())
             }
 
             "mul" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                MulInstruction(label, r, s1, s2)
+
+                MulInstruction(label, scanInt(), scanInt(), scanInt())
             }
             "div" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                DivInstruction(label, r, s1, s2)
+
+                DivInstruction(label, scanInt(), scanInt(), scanInt())
             }
 
             "out" -> {
-                r = scanInt()
-                OutInstruction(label, r)
+
+                OutInstruction(label, scanInt())
 
             }
 
-
-        // You will have to write code here for the other instructions
             else -> {
                 NoOpInstruction(label, line)
             }
@@ -187,20 +200,18 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         }
     }
 
-    // TODO: take care of the case in which the instruction is not found
-    // TODO: distinguish between returning 0 because the instruction is not found versus simply residing at that address
-    //
-    fun getInstructionAddress(label:String): Int {
+    /**TODO: take care of the case in which the instruction is not found
+     * TODO: distinguish between returning 0 because the instruction is not found versus simply residing at that address
+     */
+    fun getInstructionAddress(label: String): Int {
         var address = 0
         for (instr in prog) {
             if (label == instr.toString().split(":")[0])
                 return address
             address++
         }
-        return 0 //TODO
+        return 0
     }
-
-
 
 
 }

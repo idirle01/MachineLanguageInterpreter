@@ -1,8 +1,9 @@
 package sml.instructions
+
 import sml.Instruction
 import sml.Machine
 
-class SubInstruction (label: String, val result: Int, val op1: Int, val op2: Int) : Instruction(label, "sub") {
+class SubInstruction(label: String, val result: Int, val op1: Int, val op2: Int) : Instruction(label, "sub") {
 
     override fun execute(m: Machine) {
         val value1 = m.registers.getRegister(op1)
