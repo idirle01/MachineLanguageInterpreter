@@ -111,13 +111,11 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                     Int::class -> println("Int")
                     String::class -> println("String")
                 }
-                // paramTypes.add(element.type.jvmErasure)
-                //todo: check constructor.callBy
             }
             println()
         }
 
-        //var parameterTypes = classRef.constructors
+
         return when (ins) { // replace with reflection
 
             "bnz" -> {
