@@ -95,13 +95,7 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
      * Translate line into an instruction with label label and return the instruction
      */
     fun getInstruction(label: String): Instruction {
-        /** based on the opcode of the line (add), create instr
-         *map opcodes such as "add" -> "AddInstruction"
-         *get the string, format it to correspond to instructions
-         *get a reference to the class using ::class
-         */
-
-
+     
         val ins = scan()
 
         val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
