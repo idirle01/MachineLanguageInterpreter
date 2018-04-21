@@ -1,13 +1,11 @@
 package sml
 
+import sml.instructions.NoOpInstruction
 import java.io.File
 import java.io.IOException
 import java.util.Scanner
 import kotlin.collections.ArrayList
-import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
-
-import sml.instructions.NoOpInstruction
 
 /*
  * The machine language interpreter
@@ -96,13 +94,13 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
     fun getInstruction(label: String): Instruction {
 
         val ins = scan()
+        val defaultInstruction = NoOpInstruction(label, line)
 
-        // form class name on the fly
+        // form class name on the fly and obtain KClass reference
         var classRef = try {
             val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
-            //obtain KClass reference
             Class.forName("sml.instructions.$className").kotlin
-        } catch(exception: ClassNotFoundException) {
+        } catch (exception: ClassNotFoundException) {
             Class.forName("sml.instructions.NoOpInstruction").kotlin
         }
 
@@ -115,10 +113,9 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         return when (ins) {
             "bnz" -> primaryConstructor?.call(label, scanInt(), scan()) as Instruction
             "lin" -> primaryConstructor?.call(label, scanInt(), scanInt()) as Instruction
-            "add", "sub", "mul", "div" ->
-                primaryConstructor?.call(label, scanInt(), scanInt(), scanInt()) as Instruction
+            "add", "sub", "mul", "div" -> primaryConstructor?.call(label, scanInt(), scanInt(), scanInt()) as Instruction
             "out" -> primaryConstructor?.call(label, scanInt()) as Instruction
-            else -> NoOpInstruction(label, line)
+            else -> defaultInstruction
         }
     }
 
