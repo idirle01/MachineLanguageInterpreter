@@ -1,8 +1,8 @@
 # SDP-2018-Coursework01 - Simple Machine Language
 # Author
 Iulia Dirleci (idirle01)
-# Approach
-In the first instance, the exisiting code has been amended to allow Machine to handle the other types of instructions. 
+# Overview
+In the first instance, the existing code has been amended to allow Machine to handle the other types of instructions. 
 For this purpose, the following classes have been added:
 
 * OutInstruction to handle `out` instructions
@@ -13,7 +13,7 @@ For this purpose, the following classes have been added:
 	
 The `getInstruction` method in the Machine.kt class was then amended to make use of reflection when creating the instructions.
 
-# Testing
+# Approach
 test*.sml files (see repo) were used to test the functionality of this program. 
 
 Several situations have been tested:
@@ -53,6 +53,25 @@ Values of registers at program termination: sml.sml.Registers(registers=[0, 2, 5
 
 Process finished with exit code 0
 ```
+* If a branch instruction references an instruction that does not exist, the program ignores it and continues execution (`test11.sml`):
+```
+Here is the program; it has 7 instructions.
+f0: lin register 20 value of 6
+f1: lin register 21 value of 1
+f2: lin register 22 value of 1
+f3: mul 21 * 20 to 21
+f4: sub 20 - 22 to 20
+f5: bnz 20
+f6: out register 21
+
+Beginning program execution...
+The value of register 21 is 6
+Ending program execution.
+Values of registers at program termination: sml.sml.Registers(registers=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]).
+
+Process finished with exit code 0
+```
+
 
 # Known issues
 * Division by zero is an obvious case where errors can occur. The approach chosen was to let an ArithmeticException to happen so as to prevent next instructions from using erroneous data. Indeed, when `test5_2.sml` is run, the following output is obtained:
@@ -108,7 +127,7 @@ Beginning program execution...
 Process finished with exit code 1
 ```
 
-* An IndexOutOfBoundsException will also be thrown if an instruction references a register number smaller than zero or bigger than 31 (`test10.sml') 
+* An IndexOutOfBoundsException will also be thrown if an instruction references a register number smaller than zero or bigger than 31 (`test10.sml`) 
 ```
 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: 32Here is the program; it has 1 instructions.
 f0: lin register 32 value of 6
