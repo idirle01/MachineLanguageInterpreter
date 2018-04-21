@@ -1,7 +1,5 @@
 package sml
 
-import sml.Machine
-
 fun main(args: Array<String>) {
 
     if (args.size != 1) {

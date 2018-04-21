@@ -1,13 +1,12 @@
 package sml
 
-import sml.instructions.*
 import java.io.File
 import java.io.IOException
 import java.util.Scanner
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
-import kotlin.reflect.KType
-import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.full.primaryConstructor
+
 
 /*
  * The machine language interpreter
@@ -46,10 +45,10 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
 
     /**
      * Execute the program in prog, beginning at instruction 0.
-     * Precondition: the program and its labels have been store properly.
+     * Precondition: the program and its labels have been stored properly.
      */
     fun execute() {
-        while (pc < prog.size) { //4
+        while (pc < prog.size) {
             val ins = prog[pc++]
             ins.execute(this)
         }
@@ -74,7 +73,6 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
 
                 while (sc.hasNext()) {
                     line = sc.nextLine()
-                    // Store the label
                     val label = scan()
 
                     if (label.length > 0) {
@@ -95,66 +93,29 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
      * Translate line into an instruction with label label and return the instruction
      */
     fun getInstruction(label: String): Instruction {
-     
+
         val ins = scan()
 
+        // form class name on the fly
         val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
 
-        println(className)
+        //obtain KClass reference
         val classRef: KClass<*> = Class.forName("sml.instructions." + className).kotlin
 
-        val paramTypes = mutableListOf<KClass<*>>()
+        // obtain reference to primary constructor
+        val primaryConstructor = classRef.primaryConstructor
 
-        for (constructor in classRef.constructors) {
-            for (element in constructor.parameters) {
-                when (element.type.jvmErasure) {
-                    Int::class -> println("Int")
-                    String::class -> println("String")
-                }
-            }
-            println()
+        //create instruction as needed
+        return when (ins) {
+            "bnz" -> primaryConstructor?.call(label, scanInt(), scan()) as Instruction
+            "lin" -> primaryConstructor?.call(label, scanInt(), scanInt()) as Instruction
+            "add", "sub", "mul", "div" ->
+                primaryConstructor?.call(label, scanInt(), scanInt(), scanInt()) as Instruction
+            "out" -> primaryConstructor?.call(label, scanInt()) as Instruction
+            else -> primaryConstructor?.call(label, line) as Instruction
+
         }
 
-
-        return when (ins) { // replace with reflection
-
-            "bnz" -> {
-                BnzInstruction(label, scanInt(), scan())
-            }
-
-            "lin" -> {
-
-                LinInstruction(label, scanInt(), scanInt())
-
-            }
-            "add" -> {
-
-                AddInstruction(label, scanInt(), scanInt(), scanInt())
-            }
-            "sub" -> {
-
-                SubInstruction(label, scanInt(), scanInt(), scanInt())
-            }
-
-            "mul" -> {
-
-                MulInstruction(label, scanInt(), scanInt(), scanInt())
-            }
-            "div" -> {
-
-                DivInstruction(label, scanInt(), scanInt(), scanInt())
-            }
-
-            "out" -> {
-
-                OutInstruction(label, scanInt())
-
-            }
-
-            else -> {
-                NoOpInstruction(label, line)
-            }
-        }
     }
 
     /*
