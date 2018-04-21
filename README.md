@@ -13,6 +13,7 @@ For this purpose, the following classes have been added:
 	
 The `getInstruction` method in the Machine.kt class was then amended to make use of reflection when creating the instructions.
 
-# Results
+# Testing
+If the user runs the program with unknown instructions, these will be treated as null/NoOpInstructions, which are just placeholders that do not do anything. 
 test*.sml files (see repo) were used to test the functionality of this program. 
 
