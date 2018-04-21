@@ -98,10 +98,14 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val ins = scan()
 
         // form class name on the fly
-        val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
+        var classRef = try {
+            val className = ins.substring(0, 1).toUpperCase() + ins.substring(1) + "Instruction"
+            //obtain KClass reference
+            Class.forName("sml.instructions.$className").kotlin
+        } catch(exception: ClassNotFoundException) {
+            Class.forName("sml.instructions.NoOpInstruction").kotlin
+        }
 
-        //obtain KClass reference
-        val classRef: KClass<*> = Class.forName("sml.instructions." + className).kotlin
 
         // obtain reference to primary constructor
         val primaryConstructor = classRef.primaryConstructor

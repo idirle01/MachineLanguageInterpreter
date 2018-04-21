@@ -3,7 +3,8 @@ package sml.instructions
 import sml.Instruction
 import sml.Machine
 
-class NoOpInstruction(label: String, val line: String) : Instruction(label, "NoOp") {
+// NoOpInstruction is used for representing a null instruction
+class NoOpInstruction(label: String, val line: String) : Instruction(label, "noop") {
     override fun execute(m: Machine) {
     }
 
