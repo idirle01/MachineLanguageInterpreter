@@ -33,6 +33,25 @@ Values of registers at program termination: sml.sml.Registers(registers=[0, 10, 
 
 Process finished with exit code 0
 ```
+
+* Similarly, if a branch instruction references an instruction that does not exist, the program ignores it and continues execution (`test11.sml`):
+```
+Here is the program; it has 7 instructions.
+f0: lin register 20 value of 6
+f1: lin register 21 value of 1
+f2: lin register 22 value of 1
+f3: mul 21 * 20 to 21
+f4: sub 20 - 22 to 20
+f5: bnz 20
+f6: out register 21
+
+Beginning program execution...
+The value of register 21 is 6
+Ending program execution.
+Values of registers at program termination: sml.sml.Registers(registers=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]).
+
+Process finished with exit code 0
+```
 * If a given instruction contains more arguments than necessary, the extra arguments willl just be ignored. This is the case with instructions 3-6 in `test7.sml`:
 ```
 Here is the program; it has 9 instructions.
@@ -53,25 +72,6 @@ Values of registers at program termination: sml.sml.Registers(registers=[0, 2, 5
 
 Process finished with exit code 0
 ```
-* If a branch instruction references an instruction that does not exist, the program ignores it and continues execution (`test11.sml`):
-```
-Here is the program; it has 7 instructions.
-f0: lin register 20 value of 6
-f1: lin register 21 value of 1
-f2: lin register 22 value of 1
-f3: mul 21 * 20 to 21
-f4: sub 20 - 22 to 20
-f5: bnz 20
-f6: out register 21
-
-Beginning program execution...
-The value of register 21 is 6
-Ending program execution.
-Values of registers at program termination: sml.sml.Registers(registers=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]).
-
-Process finished with exit code 0
-```
-
 
 # Known issues
 * Division by zero is an obvious case where errors can occur. The approach chosen was to let an ArithmeticException to happen so as to prevent next instructions from using erroneous data. Indeed, when `test5_2.sml` is run, the following output is obtained:
