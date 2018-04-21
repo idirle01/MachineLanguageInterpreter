@@ -9,7 +9,7 @@ class BnzInstruction(label: String, val registerToCheck: Int, val secondLabel: S
     override fun execute(m: Machine) {
 
         if (m.registers.getRegister(registerToCheck) != 0) {
-            m.pc = m.getInstructionAddress(secondLabel)
+            m.jumpToInstruction(secondLabel)
         }
 
     }

@@ -7,6 +7,7 @@ import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
+import sml.instructions.NoOpInstruction
 
 /*
  * The machine language interpreter
@@ -105,17 +106,16 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         // obtain reference to primary constructor
         val primaryConstructor = classRef.primaryConstructor
 
-        //create instruction as needed
+        // create instruction as needed
+        // if the instruction cannot be created return a NoOp
         return when (ins) {
             "bnz" -> primaryConstructor?.call(label, scanInt(), scan()) as Instruction
             "lin" -> primaryConstructor?.call(label, scanInt(), scanInt()) as Instruction
             "add", "sub", "mul", "div" ->
                 primaryConstructor?.call(label, scanInt(), scanInt(), scanInt()) as Instruction
             "out" -> primaryConstructor?.call(label, scanInt()) as Instruction
-            else -> primaryConstructor?.call(label, line) as Instruction
-
+            else -> NoOpInstruction(label, line)
         }
-
     }
 
     /*
@@ -153,18 +153,27 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         }
     }
 
-    /**TODO: take care of the case in which the instruction is not found
-     * TODO: distinguish between returning 0 because the instruction is not found versus simply residing at that address
+    /**
+     * Return the index of the instruction in prog
+     * which corresponds to the passed label
+     * Return -1 if instruction cannot be found
      */
-    fun getInstructionAddress(label: String): Int {
-        var address = 0
-        for (instr in prog) {
+    private fun getInstructionAddress(label: String): Int {
+        for ((address, instr) in prog.withIndex()) {
             if (label == instr.toString().split(":")[0])
                 return address
-            address++
         }
-        return 0
+        return -1
     }
 
-
+    /**
+     * Changes the value of the machine's program counter to point
+     * to the instruction described by the passed label
+     * If the passed label is not found, no change will happen
+     */
+    fun jumpToInstruction(label: String) {
+        val position = getInstructionAddress(label)
+        if (position != -1)
+            pc = position
+    }
 }
