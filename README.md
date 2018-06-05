@@ -1,4 +1,4 @@
-# SDP-2018-Coursework01 - Simple Machine Language
+# SDP-2018-CW01 - Simple Machine Language
 # Author
 Iulia Dirleci (idirle01)
 # Overview
