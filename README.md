@@ -1,4 +1,4 @@
-# SDP-2018-CW01 - Simple Machine Language
+# Simple Machine Language Interpreter
 # Author
 Iulia Dirleci (idirle01)
 # Overview
